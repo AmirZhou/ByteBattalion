@@ -9,6 +9,7 @@ import {
 
 import { Goal } from './Goal';
 import { Task } from './Task';
+import { Progress } from './Progress';
 
 @Entity('users')
 export class User {
@@ -33,7 +34,9 @@ export class User {
   @OneToMany(()=>Task, task=>task.user)
   tasks: Task[];
   
-  
+  @OneToMany(() => Progress, progress => progress.user)
+  progresses: Progress[]
+
 
   @CreateDateColumn()
   createDate: Date;

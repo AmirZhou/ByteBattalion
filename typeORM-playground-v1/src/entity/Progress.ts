@@ -4,7 +4,9 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
 } from 'typeorm';
+import { User } from './User';
 
 @Entity('Progresses')
 export class Progress {
@@ -16,6 +18,9 @@ export class Progress {
 
   @Column({ type: 'text', nullable: true })
   notes: string;
+
+  @ManyToOne(()=>User, user => user.progresses)  
+  user: User;
 
   @CreateDateColumn()
   createDate: Date;
