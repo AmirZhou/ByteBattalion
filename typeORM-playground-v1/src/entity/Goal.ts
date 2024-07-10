@@ -4,7 +4,9 @@ import {
   Column,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  ManyToOne,
 } from 'typeorm';
+import { User } from './User';
 
 @Entity('goals')
 export class Goal {
@@ -22,6 +24,9 @@ export class Goal {
 
   @Column({ type: 'timestamp' })
   endDate: Date;
+
+  @ManyToOne(()=>User, user => user.goals)
+  user: User;
 
   @CreateDateColumn()
   createdDate: Date;

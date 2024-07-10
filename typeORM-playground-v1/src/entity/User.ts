@@ -4,7 +4,11 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
+
+import { Goal } from './Goal';
+import { Task } from './Task';
 
 @Entity('users')
 export class User {
@@ -22,6 +26,14 @@ export class User {
 
   @Column({ type: 'boolean', default: true })
   isActive: boolean;
+
+  @OneToMany(() => Goal, (goal) => goal.user)
+  goals: Goal[];
+
+  @OneToMany(()=>Task, task=>task.user)
+  tasks: Task[];
+  
+  
 
   @CreateDateColumn()
   createDate: Date;
