@@ -5,11 +5,15 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
+  OneToOne,
 } from 'typeorm';
 
 import { Goal } from './Goal';
 import { Task } from './Task';
 import { Progress } from './Progress';
+import { UserSetting } from './UserSetting';
+import { Tag } from './Tag';
+import { Notification } from './Notification';
 
 @Entity('users')
 export class User {
@@ -28,15 +32,20 @@ export class User {
   @Column({ type: 'boolean', default: true })
   isActive: boolean;
 
+  @OneToOne(() => UserSetting, (userSetting) => userSetting.user)
+  userSetting: UserSetting;
+
   @OneToMany(() => Goal, (goal) => goal.user)
   goals: Goal[];
 
-  @OneToMany(()=>Task, task=>task.user)
+  @OneToMany(() => Task, (task) => task.user)
   tasks: Task[];
-  
-  @OneToMany(() => Progress, progress => progress.user)
-  progresses: Progress[]
 
+  @OneToMany(() => Progress, (progress) => progress.user)
+  progresses: Progress[];
+
+  @OneToMany(()=>Notification, notification => notification.user)
+  notifications: Notification[];
 
   @CreateDateColumn()
   createDate: Date;

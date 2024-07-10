@@ -4,7 +4,9 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToOne,
 } from 'typeorm';
+import { User } from './User';
 
 @Entity('user-settings')
 export class UserSetting {
@@ -19,6 +21,9 @@ export class UserSetting {
 
   @Column({ type: 'varchar', length: 255, nullable: true })
   language: string;
+
+  @OneToOne(() => User, (user) => user.userSetting)
+  user: User;
 
   @CreateDateColumn()
   createDate: Date;
