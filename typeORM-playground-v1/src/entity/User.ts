@@ -14,6 +14,7 @@ import { Progress } from './Progress';
 import { UserSetting } from './UserSetting';
 import { Tag } from './Tag';
 import { Notification } from './Notification';
+import { AIRecommendation } from './AIRecommendation';
 
 @Entity('users')
 export class User {
@@ -44,8 +45,11 @@ export class User {
   @OneToMany(() => Progress, (progress) => progress.user)
   progresses: Progress[];
 
-  @OneToMany(()=>Notification, notification => notification.user)
+  @OneToMany(() => Notification, (notification) => notification.user)
   notifications: Notification[];
+
+  @OneToMany(() => AIRecommendation, aiRecommendation => aiRecommendation.user)
+  aiRecommendations : AIRecommendation[];
 
   @CreateDateColumn()
   createDate: Date;

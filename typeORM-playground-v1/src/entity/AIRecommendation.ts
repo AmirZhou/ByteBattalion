@@ -4,7 +4,9 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
 } from 'typeorm';
+import { User } from './User';
 
 @Entity('ai_recommendations')
 export class AIRecommendation {
@@ -20,6 +22,8 @@ export class AIRecommendation {
   @Column({ type: 'boolean' })
   accepted: boolean;
 
+  @ManyToOne(() => User, (user) => user.aiRecommendations)
+  user: User;
   @CreateDateColumn()
   createDate: Date;
 
