@@ -1,20 +1,21 @@
 import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
   CreateDateColumn,
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
   UpdateDateColumn,
+  Timestamp,
 } from 'typeorm';
 
-@Entity('tasks')
-export class Task {
+@Entity('goals')
+export class Goal {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column({ type: 'varchar', length: 255 })
   title: string;
 
-  @Column({ type: 'text', length: 255 })
+  @Column({ type: 'varchar', length: 255 })
   description: string;
 
   @Column({ type: 'timestamp' })
@@ -24,8 +25,7 @@ export class Task {
   endDate: Date;
 
   @CreateDateColumn()
-  createDate: Date;
-
+  createdDate: Date;
   @UpdateDateColumn()
-  updateDate: Date;
+  updatedDate: Date;
 }
