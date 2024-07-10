@@ -14,7 +14,7 @@ export class Milestone {
   @Column({ type: 'varchar', length: 255 })
   title: string;
 
-  @Column({type: 'text', length: 255})
+  @Column({type: 'text', nullable: true})
   description: string;
 
   @CreateDateColumn()
