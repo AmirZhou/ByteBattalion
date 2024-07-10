@@ -4,7 +4,6 @@ import {
   Column,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-  Timestamp,
 } from 'typeorm';
 
 @Entity('goals')
