@@ -12,7 +12,6 @@ import { Goal } from './Goal';
 import { Task } from './Task';
 import { Progress } from './Progress';
 import { UserSetting } from './UserSetting';
-import { Tag } from './Tag';
 import { Notification } from './Notification';
 import { AIRecommendation } from './AIRecommendation';
 
@@ -48,8 +47,11 @@ export class User {
   @OneToMany(() => Notification, (notification) => notification.user)
   notifications: Notification[];
 
-  @OneToMany(() => AIRecommendation, aiRecommendation => aiRecommendation.user)
-  aiRecommendations : AIRecommendation[];
+  @OneToMany(
+    () => AIRecommendation,
+    (aiRecommendation) => aiRecommendation.user
+  )
+  aiRecommendations: AIRecommendation[];
 
   @CreateDateColumn()
   createDate: Date;

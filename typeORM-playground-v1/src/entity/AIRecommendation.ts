@@ -24,6 +24,7 @@ export class AIRecommendation {
 
   @ManyToOne(() => User, (user) => user.aiRecommendations)
   user: User;
+
   @CreateDateColumn()
   createDate: Date;
 
