@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { CreateUserDto, UpdateUserDto } from './dto';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { CreateUserDto, UpdateUserDto } from './dtos';
 
 // interface User {
 //   id: number;
@@ -54,9 +54,10 @@ export class UsersService {
 
   findById(id: number) {
     const user = this.users.find((user) => user.id === id);
-    if (user) {
-      return user;
+    if (!user) {
+      throw new HttpException('No such user', HttpStatus.I_AM_A_TEAPOT);
     }
+    return user;
   }
 
   create(user: CreateUserDto) {
