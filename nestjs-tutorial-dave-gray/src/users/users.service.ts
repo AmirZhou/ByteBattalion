@@ -2,11 +2,10 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto, UpdateUserDto } from './dtos';
 import { KingAmirException } from './exceptions';
 
-// interface User {
-//   id: number;
-//   name: string;
-//   email: string;
-//   role: 'ADMIN' | 'SDE' | 'INTERN';
+// enum Role {
+//   INTERN = 'INTERN',
+//   SDE = 'SDE',
+//   ADMIN = 'ADMIN',
 // }
 
 @Injectable()
@@ -46,9 +45,14 @@ export class UsersService {
 
   findAll(role?: 'INTERN' | 'SDE' | 'ADMIN') {
     if (role) {
-      return this.users.filter((user) => {
-        return user.role === role;
-      });
+      const users = this.users.filter((user) => user.role === role);
+      if (!users.length) {
+        throw new KingAmirException(
+          `No user with such role ${role}`,
+          HttpStatus.NOT_FOUND,
+        );
+      }
+      return users;
     }
     return this.users;
   }
