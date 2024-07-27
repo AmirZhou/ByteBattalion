@@ -6,6 +6,7 @@ POST http://localhost:3000/messages
 content-type: application/json
 
 {
+  "content": "Hello World",
   "amircontent": "You are the best"
 }
 
