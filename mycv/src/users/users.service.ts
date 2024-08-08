@@ -36,10 +36,7 @@ export class UsersService {
 
   //insert and update are made to deal with plain objects
   async update(id: number, attrs: Partial<User>) {
-    const user = await this.findOneBy(id);
-    if (!user) {
-      throw new Error('user not found');
-    }
+    const user = await this.findOneByOrFail(id);
     Object.assign(user, attrs);
     const result = await this.repo.save(user);
     // const result = await this.repo.update(id, attrs);
@@ -47,10 +44,10 @@ export class UsersService {
   }
 
   async remove(id: number) {
-    const user = await this.findOneBy(id);
-    if (!user) {
-      throw new Error('No such user');
-    }
+    const user = await this.findOneByOrFail(id);
+    // if (!user) {
+    //   throw new Error('No such user');
+    // }
     const result = await this.repo.remove(user);
     return result;
   }

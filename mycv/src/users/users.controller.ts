@@ -6,9 +6,10 @@ import {
   Param,
   Body,
   Query,
+  Delete,
   ParseIntPipe,
 } from '@nestjs/common';
-import { CreateUserDto } from './dtos/create-user.dto';
+import { CreateUserDto, UpdateUserDto } from './dtos';
 import { UsersService } from './users.service';
 
 @Controller('auth')
@@ -28,5 +29,18 @@ export class UsersController {
   @Get('/:id')
   async findUser(@Param('id', ParseIntPipe) id: number) {
     return await this.usersService.findOneBy(id);
+  }
+
+  @Delete('/:id')
+  async deleteUser(@Param('id', ParseIntPipe) id: number) {
+    return await this.usersService.remove(id);
+  }
+
+  @Patch('/:id')
+  async updateUser(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    return await this.usersService.update(id, updateUserDto);
   }
 }
