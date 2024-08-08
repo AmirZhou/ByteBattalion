@@ -13,32 +13,45 @@ export class UsersService {
     return this.repo.save(user);
   }
 
-  async findOne(id: number) {
+  async findOneBy(id: number) {
     const result = await this.repo.findOneBy({
       id: id,
     });
     return result;
   }
 
-  async findOneOrFail(id: number) {
+  async findOneByOrFail(id: number) {
     const result = await this.repo.findOneByOrFail({
       id: id,
     });
     return result;
   }
 
-  async find() {
-    const result = await this.repo.find();
+  async findBy(email: string) {
+    const result = await this.repo.findBy({
+      email: email,
+    });
     return result;
   }
 
-  async update(id: number, update: any) {
-    const result = await this.repo.update(id, update);
+  //insert and update are made to deal with plain objects
+  async update(id: number, attrs: Partial<User>) {
+    const user = await this.findOneBy(id);
+    if (!user) {
+      throw new Error('user not found');
+    }
+    Object.assign(user, attrs);
+    const result = await this.repo.save(user);
+    // const result = await this.repo.update(id, attrs);
     return result;
   }
 
   async remove(id: number) {
-    const result = await this.repo.delete(id);
+    const user = await this.findOneBy(id);
+    if (!user) {
+      throw new Error('No such user');
+    }
+    const result = await this.repo.remove(user);
     return result;
   }
 }
