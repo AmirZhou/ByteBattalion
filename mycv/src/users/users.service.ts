@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
@@ -44,11 +44,20 @@ export class UsersService {
   }
 
   async remove(id: number) {
-    const user = await this.findOneByOrFail(id);
-    // if (!user) {
-    //   throw new Error('No such user');
-    // }
-    const result = await this.repo.remove(user);
-    return result;
+    try {
+      const user = await this.findOneByOrFail(id);
+      const result = await this.repo.remove(user);
+      return result;
+    } catch (error) {
+      if (error.name == 'EntityNotFoundError') {
+        throw new HttpException('HOOOO', HttpStatus.NOT_FOUND);
+      } else {
+        console.log(error.name);
+        throw new HttpException(
+          'Something went wrong from our side',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
   }
 }

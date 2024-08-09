@@ -17,7 +17,7 @@ GET http://localhost:3000/auth?email=amir@gmail.com
 
 
 ### Delete a user with id
-DELETE http://localhost:3000/auth/1
+DELETE http://localhost:3000/auth/100
 
 
 ### Update a user with id
