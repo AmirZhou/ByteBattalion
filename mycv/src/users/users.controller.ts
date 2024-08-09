@@ -10,7 +10,8 @@ import {
   ParseIntPipe,
   HttpException,
   HttpStatus,
-  HttpVersionNotSupportedException,
+  UseInterceptors,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { CreateUserDto, UpdateUserDto } from './dtos';
 import { UsersService } from './users.service';
@@ -30,6 +31,7 @@ export class UsersController {
     return await this.usersService.findBy(email);
   }
 
+  @UseInterceptors(ClassSerializerInterceptor)
   @Get('/:id')
   async findUser(@Param('id', ParseIntPipe) id: number) {
     try {
