@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
+import { UserNotFoundException } from 'src/exceptions';
 
 @Injectable()
 export class UsersService {
@@ -36,28 +37,20 @@ export class UsersService {
 
   //insert and update are made to deal with plain objects
   async update(id: number, attrs: Partial<User>) {
-    const user = await this.findOneByOrFail(id);
+    const user = await this.findOneBy(id);
+    if (!user) {
+      throw new UserNotFoundException(`User with id: ${id} is not found`);
+    }
     Object.assign(user, attrs);
     const result = await this.repo.save(user);
-    // const result = await this.repo.update(id, attrs);
     return result;
   }
 
   async remove(id: number) {
-    try {
-      const user = await this.findOneByOrFail(id);
-      const result = await this.repo.remove(user);
-      return result;
-    } catch (error) {
-      if (error.name == 'EntityNotFoundError') {
-        throw new HttpException('HOOOO', HttpStatus.NOT_FOUND);
-      } else {
-        console.log(error.name);
-        throw new HttpException(
-          'Something went wrong from our side',
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
+    const user = await this.findOneByOrFail(id);
+    if (!user) {
+      throw new UserNotFoundException(`User with id: ${id} is not found`);
     }
+    return await this.repo.remove(user);
   }
 }

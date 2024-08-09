@@ -8,9 +8,13 @@ import {
   Query,
   Delete,
   ParseIntPipe,
+  HttpException,
+  HttpStatus,
+  HttpVersionNotSupportedException,
 } from '@nestjs/common';
 import { CreateUserDto, UpdateUserDto } from './dtos';
 import { UsersService } from './users.service';
+import { UserNotFoundException } from 'src/exceptions';
 
 @Controller('auth')
 export class UsersController {
@@ -33,7 +37,17 @@ export class UsersController {
 
   @Delete('/:id')
   async deleteUser(@Param('id', ParseIntPipe) id: number) {
-    return await this.usersService.remove(id);
+    try {
+      return await this.usersService.remove(id);
+    } catch (error) {
+      if (error instanceof UserNotFoundException) {
+        throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+      }
+      throw new HttpException(
+        'Something went wrong from our side',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   @Patch('/:id')
