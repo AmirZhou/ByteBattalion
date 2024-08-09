@@ -15,18 +15,21 @@ export class UsersService {
   }
 
   async findOneBy(id: number) {
-    const result = await this.repo.findOneBy({
+    const user = await this.repo.findOneBy({
       id: id,
     });
-    return result;
+    if (!user) {
+      throw new UserNotFoundException(`User with id: ${id} is not found`);
+    }
+    return user;
   }
 
-  async findOneByOrFail(id: number) {
-    const result = await this.repo.findOneByOrFail({
-      id: id,
-    });
-    return result;
-  }
+  // async findOneByOrFail(id: number) {
+  //   const result = await this.repo.findOneByOrFail({
+  //     id: id,
+  //   });
+  //   return result;
+  // }
 
   async findBy(email: string) {
     const result = await this.repo.findBy({
@@ -47,7 +50,7 @@ export class UsersService {
   }
 
   async remove(id: number) {
-    const user = await this.findOneByOrFail(id);
+    const user = await this.findOneBy(id);
     if (!user) {
       throw new UserNotFoundException(`User with id: ${id} is not found`);
     }

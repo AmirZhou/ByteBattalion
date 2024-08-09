@@ -32,7 +32,17 @@ export class UsersController {
 
   @Get('/:id')
   async findUser(@Param('id', ParseIntPipe) id: number) {
-    return await this.usersService.findOneBy(id);
+    try {
+      return await this.usersService.findOneBy(id);
+    } catch (error) {
+      if (error instanceof UserNotFoundException) {
+        throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+      }
+      throw new HttpException(
+        'Something wrong internally',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   @Delete('/:id')
