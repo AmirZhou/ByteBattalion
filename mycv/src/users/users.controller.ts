@@ -16,6 +16,7 @@ import {
 import { CreateUserDto, UpdateUserDto } from './dtos';
 import { UsersService } from './users.service';
 import { UserNotFoundException } from 'src/exceptions';
+import { SerializeInterceptor } from 'src/interceptors/serialize.interceptor';
 
 @Controller('auth')
 export class UsersController {
@@ -31,9 +32,10 @@ export class UsersController {
     return await this.usersService.findBy(email);
   }
 
-  @UseInterceptors(ClassSerializerInterceptor)
+  @UseInterceptors(SerializeInterceptor)
   @Get('/:id')
   async findUser(@Param('id', ParseIntPipe) id: number) {
+    console.log('handler is running');
     try {
       return await this.usersService.findOneBy(id);
     } catch (error) {
