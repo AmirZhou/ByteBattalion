@@ -13,7 +13,7 @@ import {
   UseInterceptors,
   ClassSerializerInterceptor,
 } from '@nestjs/common';
-import { CreateUserDto, UpdateUserDto } from './dtos';
+import { CreateUserDto, UpdateUserDto, UserDto } from './dtos';
 import { UsersService } from './users.service';
 import { UserNotFoundException } from 'src/exceptions';
 import { SerializeInterceptor } from 'src/interceptors/serialize.interceptor';
@@ -32,7 +32,8 @@ export class UsersController {
     return await this.usersService.findBy(email);
   }
 
-  @UseInterceptors(SerializeInterceptor)
+  @UseInterceptors(new SerializeInterceptor(UserDto))
+  // @Serialize(UserDto)   the above long code could be simplified to this, if I do a easy custom decorator in the intercepter file
   @Get('/:id')
   async findUser(@Param('id', ParseIntPipe) id: number) {
     console.log('handler is running');
