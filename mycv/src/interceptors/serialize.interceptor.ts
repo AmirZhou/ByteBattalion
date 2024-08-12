@@ -9,10 +9,15 @@ import { map } from 'rxjs/operators';
 import { plainToInstance } from 'class-transformer';
 import { LogClassName } from 'src/custom-decorators';
 
+// type ClassConstructor = new (...args: any[]) => {}; // {} means any none null object
+type ClassConstructor<T> = {
+  new (...args: any[]): T;
+};
+
 @LogClassName()
 @Injectable()
-export class SerializeInterceptor implements NestInterceptor {
-  constructor(private readonly dto: any) {}
+export class SerializeInterceptor<T> implements NestInterceptor {
+  constructor(private readonly dto: ClassConstructor<T>) {}
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(
