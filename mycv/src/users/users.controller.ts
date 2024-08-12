@@ -11,7 +11,6 @@ import {
   HttpException,
   HttpStatus,
   UseInterceptors,
-  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { CreateUserDto, UpdateUserDto, UserDto } from './dtos';
 import { UsersService } from './users.service';
@@ -19,7 +18,7 @@ import { UserNotFoundException } from 'src/exceptions';
 import { SerializeInterceptor } from 'src/interceptors/serialize.interceptor';
 
 @Controller('auth')
-@UseInterceptors(new SerializeInterceptor(UserDto))
+@UseInterceptors(new SerializeInterceptor<UserDto>(UserDto))
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
