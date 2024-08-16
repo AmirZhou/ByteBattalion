@@ -15,7 +15,7 @@ import {
 import { CreateUserDto, UpdateUserDto, UserDto } from './dtos';
 import { UsersService } from './users.service';
 import { UserNotFoundException } from 'src/exceptions';
-import { SerializeInterceptor } from 'src/interceptors/serialize.interceptor';
+import { SerializeInterceptor } from 'src/interceptors';
 
 @Controller('auth')
 @UseInterceptors(new SerializeInterceptor<UserDto>(UserDto))
