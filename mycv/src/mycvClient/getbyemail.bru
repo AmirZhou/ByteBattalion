@@ -1,0 +1,15 @@
+meta {
+  name: getbyemail
+  type: http
+  seq: 2
+}
+
+get {
+  url: http://localhost:3000/auth?email=amir@gmail.com
+  body: none
+  auth: none
+}
+
+params:query {
+  email: amir@gmail.com
+}
