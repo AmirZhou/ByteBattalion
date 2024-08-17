@@ -19,6 +19,8 @@ import { SerializeInterceptor } from 'src/interceptors';
 
 @Controller('auth')
 @UseInterceptors(new SerializeInterceptor<UserDto>(UserDto))
+// @Serialize(UserDto)   the above long code could be simplified to this, 
+  //if I do a easy custom decorator in the intercepter file
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
@@ -32,7 +34,7 @@ export class UsersController {
     return await this.usersService.findBy(email);
   }
 
-  // @Serialize(UserDto)   the above long code could be simplified to this, if I do a easy custom decorator in the intercepter file
+  
   @Get('/:id')
   async findUser(@Param('id', ParseIntPipe) id: number) {
     console.log('handler is running');

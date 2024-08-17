@@ -3,11 +3,15 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { UserNotFoundException } from 'src/exceptions';
+import { NotificationsService } from 'src/notifications/notifications.service';
 
 @Injectable()
 export class UsersService {
   // nestjs not so good with generic, we have to include @InjectRepository to provide additional infomation
-  constructor(@InjectRepository(User) private repo: Repository<User>) {}
+  constructor(
+    @InjectRepository(User) private repo: Repository<User>,
+    private notification: NotificationsService,
+  ) {}
 
   create(email: string, password: string) {
     const user = this.repo.create({ email, password });
@@ -19,6 +23,10 @@ export class UsersService {
       id: id,
     });
     if (!user) {
+      // next line tests the observable, not relavent to the main function
+      this.notification.getNotifications().subscribe((message) => {
+        console.log(message);
+      });
       throw new UserNotFoundException(`User with id: ${id} is not found`);
     }
     return user;
