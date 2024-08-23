@@ -12,15 +12,17 @@ import {
   HttpStatus,
   UseInterceptors,
 } from '@nestjs/common';
-import { CreateUserDto, UpdateUserDto, UserDto } from './dtos';
+import { CreateUserDto, UpdateUserDto, UserDto, SignInDto } from './dtos';
 import { UsersService } from './users.service';
 import {
   EmailAlreadyExistsException,
+  PasswordIncorrectException,
   UserNotFoundException,
 } from 'src/exceptions';
 import { SerializeInterceptor } from 'src/interceptors';
 import { AuthService } from './auth.service';
 import { User } from './user.entity';
+import { error } from 'console';
 
 @Controller('auth')
 @UseInterceptors(new SerializeInterceptor<UserDto>(UserDto))
@@ -34,7 +36,6 @@ export class UsersController {
 
   @Post('/signup')
   async createUser(@Body() createUserDto: CreateUserDto): Promise<User> {
-    // this.usersService.create(createUserDto.email, createUserDto.password);
     try {
       return await this.authService.signUp(
         createUserDto.email,
@@ -42,7 +43,6 @@ export class UsersController {
       );
     } catch (err) {
       if (err instanceof EmailAlreadyExistsException) {
-        console.log('email exits');
         throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
       }
       throw new HttpException(
@@ -52,6 +52,22 @@ export class UsersController {
     }
   }
 
+  @Post('/signin')
+  async signIn(@Body() signInDto: SignInDto) {
+    try {
+      return await this.authService.singIn(signInDto.email, signInDto.password);
+    } catch (error) {
+      if (error instanceof PasswordIncorrectException) {
+        throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+      } else {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
+ 
   @Get()
   async findAllUsers(@Query('email') email: string) {
     return await this.usersService.findBy(email);

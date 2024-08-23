@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { EmailAlreadyExistsException } from 'src/exceptions';
+import {
+  EmailAlreadyExistsException,
+  UserNotFoundException,
+  PasswordIncorrectException,
+} from 'src/exceptions';
 import { randomBytes, scrypt as _scrypt, BinaryLike } from 'crypto';
 import { promisify } from 'util';
 import { User } from './user.entity';
@@ -11,13 +15,37 @@ const scrypt = promisify<BinaryLike, BinaryLike, number, Buffer>(_scrypt);
 export class AuthService {
   constructor(private usersService: UsersService) {}
 
-  singIn(email: string, password: string) {}
+  async singIn(email: string, password: string) {
+    // find the user
+    const users = await this.usersService.findBy(email);
+    if (users.length == 0) {
+      throw new UserNotFoundException();
+    }
+
+    // get the hashed and salted pwd
+    const user = users[0];
+    const pwd = user.password;
+
+    // extract the salt
+    const [salt, storedHash] = pwd.split('.');
+
+    // hash the hash = salt.password
+    const hash = await scrypt(password, salt, 32);
+
+    // check if hash == pwd
+    if (hash.toString('hex') != storedHash) {
+      throw new PasswordIncorrectException();
+    }
+    return user;
+    // true : send a cookie, else throw an custom error
+
+    // question: what promise does this going to return
+  }
 
   async signUp(email: string, password: string): Promise<User> {
     // check email availability
     const user = await this.usersService.findBy(email);
     if (user.length !== 0) {
-      console.log('about to throw');
       throw new EmailAlreadyExistsException('Email already exists');
     }
     // Generate a salt
