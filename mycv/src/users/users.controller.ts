@@ -14,19 +14,42 @@ import {
 } from '@nestjs/common';
 import { CreateUserDto, UpdateUserDto, UserDto } from './dtos';
 import { UsersService } from './users.service';
-import { UserNotFoundException } from 'src/exceptions';
+import {
+  EmailAlreadyExistsException,
+  UserNotFoundException,
+} from 'src/exceptions';
 import { SerializeInterceptor } from 'src/interceptors';
+import { AuthService } from './auth.service';
+import { User } from './user.entity';
 
 @Controller('auth')
 @UseInterceptors(new SerializeInterceptor<UserDto>(UserDto))
-// @Serialize(UserDto)   the above long code could be simplified to this, 
-  //if I do a easy custom decorator in the intercepter file
+// @Serialize(UserDto)   the above long code could be simplified to this,
+//if I do a easy custom decorator in the intercepter file
 export class UsersController {
-  constructor(private usersService: UsersService) {}
+  constructor(
+    private usersService: UsersService,
+    private authService: AuthService,
+  ) {}
 
   @Post('/signup')
-  createUser(@Body() createUserDto: CreateUserDto) {
-    this.usersService.create(createUserDto.email, createUserDto.password);
+  async createUser(@Body() createUserDto: CreateUserDto): Promise<User> {
+    // this.usersService.create(createUserDto.email, createUserDto.password);
+    try {
+      return await this.authService.signUp(
+        createUserDto.email,
+        createUserDto.password,
+      );
+    } catch (err) {
+      if (err instanceof EmailAlreadyExistsException) {
+        console.log('email exits');
+        throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+      }
+      throw new HttpException(
+        'Internal server error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   @Get()
@@ -34,7 +57,6 @@ export class UsersController {
     return await this.usersService.findBy(email);
   }
 
-  
   @Get('/:id')
   async findUser(@Param('id', ParseIntPipe) id: number) {
     console.log('handler is running');

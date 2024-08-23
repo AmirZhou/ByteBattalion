@@ -3,6 +3,7 @@ import { UsersService } from './users.service';
 import { EmailAlreadyExistsException } from 'src/exceptions';
 import { randomBytes, scrypt as _scrypt, BinaryLike } from 'crypto';
 import { promisify } from 'util';
+import { User } from './user.entity';
 
 const scrypt = promisify<BinaryLike, BinaryLike, number, Buffer>(_scrypt);
 
@@ -12,11 +13,12 @@ export class AuthService {
 
   singIn(email: string, password: string) {}
 
-  async singUp(email: string, password: string) {
+  async signUp(email: string, password: string): Promise<User> {
     // check email availability
     const user = await this.usersService.findBy(email);
     if (user.length !== 0) {
-      throw new EmailAlreadyExistsException();
+      console.log('about to throw');
+      throw new EmailAlreadyExistsException('Email already exists');
     }
     // Generate a salt
     const salt = randomBytes(8).toString('hex'); // This returns a Buffer, that's an object that deals with binary, a buffer for holding and manipulating binary data in memory.
@@ -34,10 +36,12 @@ export class AuthService {
     const hash = await scrypt(password, salt, 32);
     // Join the hased result and the salt TOGETHER
 
-    const result = salt + '.' + hash.toString('hex')
+    const hashedAndSaltedPwd = salt + '.' + hash.toString('hex');
 
     // Create a new user
-
+    const newUser = await this.usersService.create(email, hashedAndSaltedPwd);
     // return the user
+
+    return newUser;
   }
 }

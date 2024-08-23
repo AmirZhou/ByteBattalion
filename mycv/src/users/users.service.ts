@@ -13,12 +13,12 @@ export class UsersService {
     private notification: NotificationsService,
   ) {}
 
-  create(email: string, password: string) {
+  async create(email: string, password: string): Promise<User> {
     const user = this.repo.create({ email, password });
     return this.repo.save(user);
   }
 
-  async findOneBy(id: number) {
+  async findOneBy(id: number): Promise<User> {
     const user = await this.repo.findOneBy({
       id: id,
     });
@@ -39,7 +39,7 @@ export class UsersService {
   //   return result;
   // }
 
-  async findBy(email: string) {
+  async findBy(email: string): Promise<User[]> {
     const result = await this.repo.findBy({
       email: email,
     });
