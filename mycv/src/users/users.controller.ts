@@ -8,10 +8,10 @@ import {
   Query,
   Delete,
   ParseIntPipe,
-  HttpException,
-  HttpStatus,
   UseInterceptors,
   UseFilters,
+  Session, // this works with session object.
+  BadRequestException,
 } from '@nestjs/common';
 import { CreateUserDto, UpdateUserDto, UserDto, SignInDto } from './dtos';
 import { UsersService } from './users.service';
@@ -31,17 +31,43 @@ export class UsersController {
     private authService: AuthService,
   ) {}
 
+  @Get('/whoami')
+  async whoAmI(@Session() session: any) {
+    if (!session || !session.userId) {
+      throw new BadRequestException();
+    }
+    return this.usersService.findOneBy(session.userId);
+  }
+
+  @Post('/signout')
+  async signOut(@Session() session: any) {
+    session.userId = null;
+  }
+
   @Post('/signup')
-  async createUser(@Body() createUserDto: CreateUserDto): Promise<User> {
-    return await this.authService.signUp(
+  async createUser(
+    @Body() createUserDto: CreateUserDto,
+    @Session() session: any,
+  ): Promise<User> {
+    const user = await this.authService.signUp(
       createUserDto.email,
       createUserDto.password,
     );
+    session.userId = user.id;
+    return user;
   }
 
   @Post('/signin')
-  async signIn(@Body() signInDto: SignInDto) {
-    return await this.authService.singIn(signInDto.email, signInDto.password);
+  async signIn(
+    @Body() signInDto: SignInDto,
+    @Session() session: any,
+  ): Promise<User> {
+    const user = await this.authService.singIn(
+      signInDto.email,
+      signInDto.password,
+    );
+    session.userId = user.id;
+    return user;
   }
 
   @Get()

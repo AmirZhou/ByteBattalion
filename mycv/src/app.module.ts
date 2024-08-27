@@ -4,6 +4,7 @@ import { ReportsModule } from './reports/reports.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users/user.entity';
 import { Report } from './reports/report.entity';
+// import { CookieSessionModule } from 'nestjs-cookie-session';
 
 @Module({
   imports: [
@@ -15,6 +16,9 @@ import { Report } from './reports/report.entity';
       entities: [User, Report],
       synchronize: true,
     }),
+    // CookieSessionModule.forRoot({
+    //   session: {secret: 'amir'}
+    // })
   ],
   controllers: [],
   providers: [],
