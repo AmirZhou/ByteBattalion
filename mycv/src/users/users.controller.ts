@@ -37,40 +37,11 @@ export class UsersController {
       createUserDto.email,
       createUserDto.password,
     );
-    // By using filter, The following code is not necessary
-    // try {
-    //   return await this.authService.signUp(
-    //     createUserDto.email,
-    //     createUserDto.password,
-    //   );
-    // } catch (err) {
-    //   if (err instanceof EmailAlreadyExistsException) {
-    //     throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
-    //   }
-    //   throw new HttpException(
-    //     'Internal server error',
-    //     HttpStatus.INTERNAL_SERVER_ERROR,
-    //   );
-    // }
   }
 
   @Post('/signin')
   async signIn(@Body() signInDto: SignInDto) {
     return await this.authService.singIn(signInDto.email, signInDto.password);
-
-    // commented out due to filter
-    // try {
-    //   return await this.authService.singIn(signInDto.email, signInDto.password);
-    // } catch (error) {
-    //   if (error instanceof PasswordIncorrectException) {
-    //     throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
-    //   } else {
-    //     throw new HttpException(
-    //       error.message,
-    //       HttpStatus.INTERNAL_SERVER_ERROR,
-    //     );
-    //   }
-    // }
   }
 
   @Get()
@@ -81,35 +52,11 @@ export class UsersController {
   @Get('/:id')
   async findUser(@Param('id', ParseIntPipe) id: number) {
     return await this.usersService.findOneBy(id);
-
-    // try {
-    //   return await this.usersService.findOneBy(id);
-    // } catch (error) {
-    //   if (error instanceof UserNotFoundException) {
-    //     throw new HttpException(error.message, HttpStatus.NOT_FOUND);
-    //   }
-    //   throw new HttpException(
-    //     'Something wrong internally',
-    //     HttpStatus.INTERNAL_SERVER_ERROR,
-    //   );
-    // }
   }
 
   @Delete('/:id')
   async deleteUser(@Param('id', ParseIntPipe) id: number) {
     return await this.usersService.remove(id);
-
-    // try {
-    //   return await this.usersService.remove(id);
-    // } catch (error) {
-    //   if (error instanceof UserNotFoundException) {
-    //     throw new HttpException(error.message, HttpStatus.NOT_FOUND);
-    //   }
-    //   throw new HttpException(
-    //     'Something went wrong from our side',
-    //     HttpStatus.INTERNAL_SERVER_ERROR,
-    //   );
-    // }
   }
 
   @Patch('/:id')
