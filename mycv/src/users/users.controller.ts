@@ -8,25 +8,66 @@ import {
   Query,
   Delete,
   ParseIntPipe,
-  HttpException,
-  HttpStatus,
   UseInterceptors,
+  UseFilters,
+  Session, // this works with session object.
+  BadRequestException,
 } from '@nestjs/common';
-import { CreateUserDto, UpdateUserDto, UserDto } from './dtos';
+import { CreateUserDto, UpdateUserDto, UserDto, SignInDto } from './dtos';
 import { UsersService } from './users.service';
-import { UserNotFoundException } from 'src/exceptions';
 import { SerializeInterceptor } from 'src/interceptors';
+import { AuthService } from './auth.service';
+import { User } from './user.entity';
+import { UserExceptionsFilter } from 'src/exceptions';
 
 @Controller('auth')
+@UseFilters(UserExceptionsFilter)
 @UseInterceptors(new SerializeInterceptor<UserDto>(UserDto))
-// @Serialize(UserDto)   the above long code could be simplified to this, 
-  //if I do a easy custom decorator in the intercepter file
+// @Serialize(UserDto)   the above long code could be simplified to this,
+//if I do a easy custom decorator in the intercepter file
 export class UsersController {
-  constructor(private usersService: UsersService) {}
+  constructor(
+    private usersService: UsersService,
+    private authService: AuthService,
+  ) {}
+
+  @Get('/whoami')
+  async whoAmI(@Session() session: any) {
+    if (!session || !session.userId) {
+      throw new BadRequestException();
+    }
+    return this.usersService.findOneBy(session.userId);
+  }
+
+  @Post('/signout')
+  async signOut(@Session() session: any) {
+    session.userId = null;
+  }
 
   @Post('/signup')
-  createUser(@Body() createUserDto: CreateUserDto) {
-    this.usersService.create(createUserDto.email, createUserDto.password);
+  async createUser(
+    @Body() createUserDto: CreateUserDto,
+    @Session() session: any,
+  ): Promise<User> {
+    const user = await this.authService.signUp(
+      createUserDto.email,
+      createUserDto.password,
+    );
+    session.userId = user.id;
+    return user;
+  }
+
+  @Post('/signin')
+  async signIn(
+    @Body() signInDto: SignInDto,
+    @Session() session: any,
+  ): Promise<User> {
+    const user = await this.authService.singIn(
+      signInDto.email,
+      signInDto.password,
+    );
+    session.userId = user.id;
+    return user;
   }
 
   @Get()
@@ -34,36 +75,14 @@ export class UsersController {
     return await this.usersService.findBy(email);
   }
 
-  
   @Get('/:id')
   async findUser(@Param('id', ParseIntPipe) id: number) {
-    console.log('handler is running');
-    try {
-      return await this.usersService.findOneBy(id);
-    } catch (error) {
-      if (error instanceof UserNotFoundException) {
-        throw new HttpException(error.message, HttpStatus.NOT_FOUND);
-      }
-      throw new HttpException(
-        'Something wrong internally',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+    return await this.usersService.findOneBy(id);
   }
 
   @Delete('/:id')
   async deleteUser(@Param('id', ParseIntPipe) id: number) {
-    try {
-      return await this.usersService.remove(id);
-    } catch (error) {
-      if (error instanceof UserNotFoundException) {
-        throw new HttpException(error.message, HttpStatus.NOT_FOUND);
-      }
-      throw new HttpException(
-        'Something went wrong from our side',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+    return await this.usersService.remove(id);
   }
 
   @Patch('/:id')

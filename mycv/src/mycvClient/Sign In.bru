@@ -1,0 +1,22 @@
+meta {
+  name: Sign In
+  type: http
+  seq: 5
+}
+
+post {
+  url: http://localhost:3000/auth/signin
+  body: json
+  auth: none
+}
+
+headers {
+  session: eyJjb2xvciI6InJlZCIsInVzZXJJZCI6MTh9
+}
+
+body:json {
+  {
+    "email": "admin1@email.com",
+    "password": "letmein"
+  }
+}
