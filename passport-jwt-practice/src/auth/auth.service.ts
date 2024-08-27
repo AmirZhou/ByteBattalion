@@ -20,7 +20,7 @@ export class AuthService {
   constructor(private jwtService: JwtService) {}
 
   validateUser({ username, password }: AuthPayloadDto) {
-    console.log('inside service');
+    console.log('auth service triggered');
     const findUser = fakeUsers.find((user) => user.username == username);
     if (!findUser) return null;
     if (password === findUser.password) {
@@ -29,6 +29,9 @@ export class AuthService {
       // This will create a JWT with the option passed in the module. which is
       return this.jwtService.sign(user);
     }
-    return null;
+  }
+
+  generateJWT() {
+
   }
 }

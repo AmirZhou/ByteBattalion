@@ -1,23 +1,11 @@
-import {
-  Controller,
-  Post,
-  Body,
-  HttpException,
-  HttpStatus,
-} from '@nestjs/common';
-import { AuthPayloadDto } from './dtos';
-import { AuthService } from './auth.service';
+import { Controller, Post, Body, UseGuards, Req } from '@nestjs/common';
+import { LocalGuard } from './guards';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
   @Post('login')
-  login(@Body() authPayload: AuthPayloadDto) {
-    console.log('login: ');
-    const userJwt = this.authService.validateUser(authPayload);
-    if (!userJwt) {
-      throw new HttpException('false credential', HttpStatus.UNAUTHORIZED);
-    }
-    return userJwt;
+  @UseGuards(LocalGuard)
+  login(@Req() req: Request) {
+    return req.user; // you have to install the type package for user.
   }
 }
