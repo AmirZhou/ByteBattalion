@@ -22,7 +22,6 @@ import {
 import { SerializeInterceptor } from 'src/interceptors';
 import { AuthService } from './auth.service';
 import { User } from './user.entity';
-import { error } from 'console';
 
 @Controller('auth')
 @UseInterceptors(new SerializeInterceptor<UserDto>(UserDto))
