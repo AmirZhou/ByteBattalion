@@ -4,28 +4,63 @@ import {
   ExecutionContext,
   BadRequestException,
 } from '@nestjs/common';
-import { Observable } from 'rxjs';
 import { Request } from 'express';
+import { map, Observable, of } from 'rxjs';
+// import { Observable } from 'rxjs';
+
+interface Session {
+  userId?: number;
+}
 
 @Injectable()
-export class SessionGuard<T extends Record<string, any> = {}>
-  implements CanActivate
-{
-  constructor(private readonly requiredProperty: keyof T) {}
-
+export class SessionGuard implements CanActivate {
   canActivate(
     context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
+  ): boolean | Observable<boolean> | Promise<boolean> {
     const request = context
       .switchToHttp()
-      .getRequest<Request & { session: T }>();
-    const session = request.session;
+      .getRequest<Request & { session?: Session }>();
 
-    if (!session || !session[this.requiredProperty]) {
-      throw new BadRequestException(
-        `${String(this.requiredProperty)} not found in session`,
-      );
-    }
-    return true;
+    return new Observable((subscriber) => {
+      console.log('Nestjs subscribed to a guard');
+
+      if (!request.session || !request.session.userId) {
+        subscriber.error(new BadRequestException('go back home plz'));
+        return;
+      }
+
+      setTimeout(() => {
+        subscriber.next(true);
+        subscriber.complete();
+      }, 5000);
+    });
+    // if(!request.session || !request.session.userId) {
+    //   throw new BadRequestException("go back home plz")
+    // }
+
+    // return true;
   }
 }
+
+// @Injectable()
+// export class SessionGuard<T extends Record<string, any> = {}>
+//   implements CanActivate
+// {
+//   constructor(private readonly requiredProperty: keyof T) {}
+
+//   canActivate(
+//     context: ExecutionContext,
+//   ): boolean | Promise<boolean> | Observable<boolean> {
+//     const request = context
+//       .switchToHttp()
+//       .getRequest<Request & { session: T }>();
+//     const session = request.session;
+
+//     if (!session || !session[this.requiredProperty]) {
+//       throw new BadRequestException(
+//         `${String(this.requiredProperty)} not found in session`,
+//       );
+//     }
+//     return true;
+//   }
+// }
