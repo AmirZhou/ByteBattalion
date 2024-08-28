@@ -19,10 +19,11 @@ import { AuthService } from './auth.service';
 import { User } from './user.entity';
 import { UserExceptionsFilter } from 'src/exceptions';
 import { CurrentUser } from 'src/custom-decorators';
+import { CurrentUserInterceptor } from './interceptors/current-user.interceptor';
 
 @Controller('auth')
 @UseFilters(UserExceptionsFilter)
-@UseInterceptors(new SerializeInterceptor<UserDto>(UserDto))
+@UseInterceptors(new SerializeInterceptor<UserDto>(UserDto), CurrentUserInterceptor)
 // @Serialize(UserDto)   the above long code could be simplified to this,
 //if I do a easy custom decorator in the intercepter file
 export class UsersController {
