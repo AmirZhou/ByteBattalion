@@ -4,7 +4,7 @@ import {
   EmailAlreadyExistsException,
   UserNotFoundException,
   PasswordIncorrectException,
-} from 'src/exceptions';
+} from '../exceptions';
 import { randomBytes, scrypt as _scrypt, BinaryLike } from 'crypto';
 import { promisify } from 'util';
 import { User } from './user.entity';

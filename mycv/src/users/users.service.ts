@@ -1,9 +1,14 @@
-import { HttpException, HttpStatus, Injectable, ParseIntPipe } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
-import { UserNotFoundException } from 'src/exceptions';
-import { NotificationsService } from 'src/notifications/notifications.service';
+import { UserNotFoundException } from '../exceptions';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
 export class UsersService {
