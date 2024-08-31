@@ -11,14 +11,17 @@ import {
   UseInterceptors,
   UseFilters,
   Session, // this works with session object.
+  UseGuards,
   BadRequestException,
 } from '@nestjs/common';
 import { CreateUserDto, UpdateUserDto, UserDto, SignInDto } from './dtos';
 import { UsersService } from './users.service';
-import { SerializeInterceptor } from 'src/interceptors';
+import { SerializeInterceptor } from '../interceptors';
 import { AuthService } from './auth.service';
 import { User } from './user.entity';
-import { UserExceptionsFilter } from 'src/exceptions';
+import { UserExceptionsFilter } from '../exceptions';
+import { CurrentUser } from '../custom-decorators';
+import { SessionGuard } from '../guards/session.guard'; // how can I make this guard generic
 
 @Controller('auth')
 @UseFilters(UserExceptionsFilter)
@@ -31,12 +34,21 @@ export class UsersController {
     private authService: AuthService,
   ) {}
 
+  // @Get('/whoami')
+  // async whoAmI(@Session() session: any) {
+  //   if (!session || !session.userId) {
+  //     throw new BadRequestException();
+  //   }
+  //   return this.usersService.findOneBy(session.userId);
+  // }
+
+  // Rather than dive into the session, we want to be declarative and use a custom decorator
+  // CurrentUser to get the user object.
   @Get('/whoami')
-  async whoAmI(@Session() session: any) {
-    if (!session || !session.userId) {
-      throw new BadRequestException();
-    }
-    return this.usersService.findOneBy(session.userId);
+  @UseGuards(SessionGuard)
+  whoAmI(@CurrentUser() user: User) {
+    
+    return user;
   }
 
   @Post('/signout')
@@ -62,7 +74,7 @@ export class UsersController {
     @Body() signInDto: SignInDto,
     @Session() session: any,
   ): Promise<User> {
-    const user = await this.authService.singIn(
+    const user = await this.authService.signIn(
       signInDto.email,
       signInDto.password,
     );

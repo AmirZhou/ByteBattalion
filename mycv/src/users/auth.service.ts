@@ -4,7 +4,7 @@ import {
   EmailAlreadyExistsException,
   UserNotFoundException,
   PasswordIncorrectException,
-} from 'src/exceptions';
+} from '../exceptions';
 import { randomBytes, scrypt as _scrypt, BinaryLike } from 'crypto';
 import { promisify } from 'util';
 import { User } from './user.entity';
@@ -15,7 +15,15 @@ const scrypt = promisify<BinaryLike, BinaryLike, number, Buffer>(_scrypt);
 export class AuthService {
   constructor(private usersService: UsersService) {}
 
-  async singIn(email: string, password: string) {
+  /**
+   * Signs in a user with a given email and password
+   * @param email the email of the user
+   * @param password the password of the user
+   * @throws UserNotFoundException if the user is not found
+   * @throws PasswordIncorrectException if the password does not match
+   * @returns the user object
+   */
+  async signIn(email: string, password: string) {
     // find the user
     const users = await this.usersService.findBy(email);
     if (users.length == 0) {
@@ -42,6 +50,11 @@ export class AuthService {
     // question: what promise does this going to return
   }
 
+  /**
+   * Signs up a new user with a given email and password
+   * @throws EmailAlreadyExistsException if the email already exists
+   * @returns a newly created user
+   */
   async signUp(email: string, password: string): Promise<User> {
     // check email availability
     const user = await this.usersService.findBy(email);
