@@ -7,7 +7,7 @@ import {
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { plainToInstance } from 'class-transformer';
-import { LogClassName } from 'src/custom-decorators';
+import { LogClassName } from '../custom-decorators';
 
 // type ClassConstructor = new (...args: any[]) => {}; // {} means any none null object
 type ClassConstructor<T> = {

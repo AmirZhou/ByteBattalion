@@ -23,7 +23,7 @@ export class AuthService {
    * @throws PasswordIncorrectException if the password does not match
    * @returns the user object
    */
-  async singIn(email: string, password: string) {
+  async signIn(email: string, password: string) {
     // find the user
     const users = await this.usersService.findBy(email);
     if (users.length == 0) {

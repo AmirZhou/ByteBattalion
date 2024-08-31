@@ -12,15 +12,16 @@ import {
   UseFilters,
   Session, // this works with session object.
   UseGuards,
+  BadRequestException,
 } from '@nestjs/common';
 import { CreateUserDto, UpdateUserDto, UserDto, SignInDto } from './dtos';
 import { UsersService } from './users.service';
-import { SerializeInterceptor } from 'src/interceptors';
+import { SerializeInterceptor } from '../interceptors';
 import { AuthService } from './auth.service';
 import { User } from './user.entity';
-import { UserExceptionsFilter } from 'src/exceptions';
-import { CurrentUser } from 'src/custom-decorators';
-import { SessionGuard } from 'src/guards/session.guard'; // how can I make this guard generic
+import { UserExceptionsFilter } from '../exceptions';
+import { CurrentUser } from '../custom-decorators';
+import { SessionGuard } from '../guards/session.guard'; // how can I make this guard generic
 
 @Controller('auth')
 @UseFilters(UserExceptionsFilter)
@@ -46,6 +47,7 @@ export class UsersController {
   @Get('/whoami')
   @UseGuards(SessionGuard)
   whoAmI(@CurrentUser() user: User) {
+    
     return user;
   }
 
@@ -72,7 +74,7 @@ export class UsersController {
     @Body() signInDto: SignInDto,
     @Session() session: any,
   ): Promise<User> {
-    const user = await this.authService.singIn(
+    const user = await this.authService.signIn(
       signInDto.email,
       signInDto.password,
     );
