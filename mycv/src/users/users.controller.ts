@@ -12,7 +12,6 @@ import {
   UseFilters,
   Session, // this works with session object.
   UseGuards,
-  BadRequestException,
 } from '@nestjs/common';
 import { CreateUserDto, UpdateUserDto, UserDto, SignInDto } from './dtos';
 import { UsersService } from './users.service';
@@ -47,7 +46,6 @@ export class UsersController {
   @Get('/whoami')
   @UseGuards(SessionGuard)
   whoAmI(@CurrentUser() user: User) {
-    
     return user;
   }
 
