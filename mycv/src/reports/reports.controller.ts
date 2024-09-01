@@ -1,11 +1,10 @@
-import { Controller, Post, Body, UseGuards, Get, UseInterceptors } from '@nestjs/common';
+import { Controller,Get, Post, Patch, Body, UseGuards, UseInterceptors, Param, ParseIntPipe } from '@nestjs/common';
 import { ReportsService } from './reports.service';
-import { CreateReportDto } from './dtos';
+import { CreateReportDto, ReportDto, ApproveReportDto} from './dtos';
 import { SessionGuard } from '../guards/session.guard';
 import { CurrentUser } from '../custom-decorators';
 import { User } from '../users/user.entity';
 import { SerializeInterceptor } from '../interceptors';
-import { ReportDto} from './dtos'
 
 @Controller('reports')
 export class ReportsController {
@@ -22,4 +21,15 @@ export class ReportsController {
   hello() {
     return 'hello world';
   }
+
+  @Get(':id')
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.reportsService.findOne(id);
+  }
+
+  @Patch(':id')
+  approve(@Body() approveReportDto: ApproveReportDto, @Param('id', ParseIntPipe) id: number) {
+    return this.reportsService.approve(approveReportDto, id)
+  }
+
 }

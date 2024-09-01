@@ -3,7 +3,7 @@ import { User } from '../users/user.entity';
 
 @Entity()
 export class Report {
-  @ManyToOne(()=>User, user=> user.reports)
+  @ManyToOne(() => User, (user) => user.reports)
   user: User;
 
   @PrimaryGeneratedColumn()
@@ -19,7 +19,7 @@ export class Report {
   model: string;
 
   @Column()
-  year: number
+  year: number;
 
   @Column()
   lng: number;
@@ -29,4 +29,7 @@ export class Report {
 
   @Column()
   mileage: number;
+
+  @Column({ default: false })
+  approved: boolean;
 }

@@ -1,0 +1,17 @@
+meta {
+  name: Approve a Report
+  type: http
+  seq: 4
+}
+
+patch {
+  url: http://localhost:3000/reports/1
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "approved": true
+  }
+}
