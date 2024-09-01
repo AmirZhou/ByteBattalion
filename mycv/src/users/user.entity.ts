@@ -5,11 +5,15 @@ import {
   AfterUpdate,
   PrimaryGeneratedColumn,
   AfterInsert,
+  OneToMany,
 } from 'typeorm';
-
+import { Report } from 'src/reports/report.entity';
 
 @Entity()
 export class User {
+  @OneToMany(() => Report, (report) => report.user)
+  reports: Report[];
+
   @PrimaryGeneratedColumn()
   id: number;
 

@@ -1,0 +1,23 @@
+meta {
+  name: create-a-report
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:3000/reports
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "price": 19999,
+    "make": "Toyota",
+    "model": "GR-86",
+    "year": 2021,
+    "lat": 0,
+    "lng": 0,
+    "mileage": 10500
+  }
+}
