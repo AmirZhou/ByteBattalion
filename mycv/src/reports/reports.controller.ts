@@ -1,10 +1,21 @@
-import { Controller,Get, Post, Patch, Body, UseGuards, UseInterceptors, Param, ParseIntPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Patch,
+  Body,
+  UseGuards,
+  UseInterceptors,
+  Param,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { ReportsService } from './reports.service';
-import { CreateReportDto, ReportDto, ApproveReportDto} from './dtos';
+import { CreateReportDto, ReportDto, ApproveReportDto } from './dtos';
 import { SessionGuard } from '../guards/session.guard';
 import { CurrentUser } from '../custom-decorators';
 import { User } from '../users/user.entity';
 import { SerializeInterceptor } from '../interceptors';
+import { AdminGuard } from '../guards/admin.guard';
 
 @Controller('reports')
 export class ReportsController {
@@ -28,8 +39,11 @@ export class ReportsController {
   }
 
   @Patch(':id')
-  approve(@Body() approveReportDto: ApproveReportDto, @Param('id', ParseIntPipe) id: number) {
-    return this.reportsService.approve(approveReportDto, id)
+  @UseGuards(AdminGuard)
+  approve(
+    @Body() approveReportDto: ApproveReportDto,
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    return this.reportsService.approve(approveReportDto, id);
   }
-
 }

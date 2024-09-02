@@ -21,6 +21,7 @@ import { User } from './user.entity';
 import { UserExceptionsFilter } from '../exceptions';
 import { CurrentUser } from '../custom-decorators';
 import { SessionGuard } from '../guards/session.guard'; // how can I make this guard generic
+import { AdminGuard } from '../guards/admin.guard';
 
 @Controller('auth')
 @UseFilters(UserExceptionsFilter)
@@ -44,7 +45,7 @@ export class UsersController {
   // Rather than dive into the session, we want to be declarative and use a custom decorator
   // CurrentUser to get the user object.
   @Get('/whoami')
-  @UseGuards(SessionGuard)
+  @UseGuards(SessionGuard, AdminGuard)
   whoAmI(@CurrentUser() user: User) {
     return user;
   }
@@ -77,6 +78,7 @@ export class UsersController {
       signInDto.password,
     );
     session.userId = user.id;
+    session.isAdmin = user.isAdmin;
     return user;
   }
 

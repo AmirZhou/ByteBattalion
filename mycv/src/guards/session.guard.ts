@@ -5,11 +5,12 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { map, Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 // import { Observable } from 'rxjs';
 
-interface Session {
+export interface Session {
   userId?: number;
+  isAdmin?: boolean;
 }
 
 @Injectable()
