@@ -45,6 +45,7 @@ export class ReportsService {
         lngStart: lng - 5,
         lngEnd: lng + 5,
       })
+      .andWhere('approved IS TRUE')
       .andWhere('report.lat BETWEEN :latStart AND :latEnd', {
         latStart: lat - 5,
         latEnd: lat + 5,
