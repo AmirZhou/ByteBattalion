@@ -35,10 +35,10 @@ export class ReportsController {
   //   return 'hello world';
   // }
 
-  @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.reportsService.findOne(id);
-  }
+  // @Get(':id')
+  // findOne(@Param('id', ParseIntPipe) id: number) {
+  //   return this.reportsService.findOne(id);
+  // }
 
   @Patch(':id')
   @UseGuards(AdminGuard)
@@ -52,7 +52,6 @@ export class ReportsController {
   @Get()
   getEstimate(@Query() query: GetEstimateDto) {
     console.log('I made it into the route');
-    return this.reportsService.createEstimate(query)
-    return query;
+    return this.reportsService.createEstimate(query);
   }
 }

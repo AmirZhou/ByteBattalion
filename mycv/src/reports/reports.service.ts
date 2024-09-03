@@ -57,5 +57,10 @@ export class ReportsService {
       .setParameter('reportMileage', mileage)
       .limit(3)
       .getRawOne();
+
+    if (!result) {
+      throw new HttpException('no matching reports', HttpStatus.NOT_FOUND);
+    }
+    return result;
   }
 }

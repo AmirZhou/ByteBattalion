@@ -1,0 +1,20 @@
+meta {
+  name: Get Estimate
+  type: http
+  seq: 5
+}
+
+get {
+  url: http://localhost:3000/reports/1?make=ford&model=mustang&lng=1&lat=1&mileage=20000&year=2020
+  body: none
+  auth: none
+}
+
+params:query {
+  make: ford
+  model: mustang
+  lng: 1
+  lat: 1
+  mileage: 20000
+  year: 2020
+}
