@@ -9,6 +9,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 const cookieSession = require('cookie-session');
 
 // import { CookieSessionModule } from 'nestjs-cookie-session';
+import { OpenaiModule } from './openai/openai.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ const cookieSession = require('cookie-session');
       isGlobal: true,
       envFilePath: `.env.${process.env.NODE_ENV || 'development'}`,
     }),
+    OpenaiModule,
     // CookieSessionModule.forRoot({
     //   session: {secret: 'amir'}
     // })
