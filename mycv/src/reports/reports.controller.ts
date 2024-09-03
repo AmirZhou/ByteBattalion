@@ -8,6 +8,7 @@ import {
   UseInterceptors,
   Param,
   ParseIntPipe,
+  Query,
 } from '@nestjs/common';
 import { ReportsService } from './reports.service';
 import { CreateReportDto, ReportDto, ApproveReportDto } from './dtos';
@@ -16,6 +17,7 @@ import { CurrentUser } from '../custom-decorators';
 import { User } from '../users/user.entity';
 import { SerializeInterceptor } from '../interceptors';
 import { AdminGuard } from '../guards/admin.guard';
+import { GetEstimateDto } from './dtos/get-estimate.dto';
 
 @Controller('reports')
 export class ReportsController {
@@ -28,10 +30,10 @@ export class ReportsController {
     return this.reportsService.create(createReportDto, user);
   }
 
-  @Get()
-  hello() {
-    return 'hello world';
-  }
+  // @Get()
+  // hello() {
+  //   return 'hello world';
+  // }
 
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
@@ -45,5 +47,11 @@ export class ReportsController {
     @Param('id', ParseIntPipe) id: number,
   ) {
     return this.reportsService.approve(approveReportDto, id);
+  }
+
+  @Get()
+  getEstimate(@Query() query: GetEstimateDto) {
+    console.log('I made it into the route');
+    return query;
   }
 }
