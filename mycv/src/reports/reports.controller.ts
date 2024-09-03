@@ -52,6 +52,7 @@ export class ReportsController {
   @Get()
   getEstimate(@Query() query: GetEstimateDto) {
     console.log('I made it into the route');
+    return this.reportsService.createEstimate(query)
     return query;
   }
 }
