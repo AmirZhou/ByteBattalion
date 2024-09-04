@@ -16,7 +16,7 @@ import { OpenaiModule } from './openai/openai.module';
     UsersModule,
     ReportsModule,
     // The following code is comment out to integrate with config module
-    
+
     // TypeOrmModule.forRoot({
     //   type: 'sqlite',
     //   database: 'db.sqlite',
@@ -55,11 +55,13 @@ import { OpenaiModule } from './openai/openai.module';
   ],
 })
 export class AppModule {
+  constructor(private configService: ConfigService) {}
+  // why can you use configService without import the module in app module
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(
         cookieSession({
-          keys: ['amirkey'],
+          keys: [this.configService.get<string>('COOKIE_SESSION_KEY')],
         }),
       )
       .forRoutes('*');
